@@ -6,7 +6,7 @@
     <title>Mini Blogg</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='css/bootstrap.min.css'>
-    <link rel='stylesheet' type='text/css' media='screen' href='css/custom.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='Css/custom.css'>
     <link rel="stylesheet" href="fontAwesome/css/all.css">
 
 </head>
@@ -22,7 +22,29 @@
         </div>
         <div class="blog-header mx-auto text-center">
             <h1><p class="lead"> <strong><em>Laughter</em></strong> is brightest where <strong><em>food</em></strong> is best.</h1>
-            <p class="lead"><strong><em>To eat is a neccessity, but eating inteligently is art</em></strong></p>
+            <p id="tag" class="lead"><strong><em>To eat is a neccessity, but eating inteligently is art</em></strong></p>
+
+            <div class="container team">
+                <a id="breakfast" href="">
+                    <img src="images/breakfastpng.png" class="img-thumbnail rounded-circle" width="90"/>
+                </a>
+                <a id="lunch" href="">
+                    <img src="images/lunch.jpg" class="img-thumbnail rounded-circle" width="90"/>
+                </a>
+                <a id="meal" href="">
+                    <img src="images/meal.png" class="img-thumbnail rounded-circle" width="90"/>
+                </a>
+                <a id="drink" href=#>
+                    <img src="images/drinks.jpg" class="img-thumbnail rounded-circle" width="90"/>
+                </a>
+                <a id="dessert" href=#>
+                    <img src="images/desserts.png" class="img-thumbnail rounded-circle" width="90"/>
+                </a>
+                <a id="baker" href=#>
+                    <img src="images/baker.png" class="img-thumbnail rounded-circle" width="90"/>
+                </a>
+              
+            </div>
         </div>
 
        
@@ -43,49 +65,111 @@
         <script src="js/jquery-3.4.1.min.js"></script> 
         <script src="js/bootstrap.bundle.min.js"></script>
         <script>
-            var rootPath;
+            var rootPath,catcopy,category;
             function init() {
-                rootPath="https://mysite.itvarsity.org/api/mini-blog/";
+                rootPath="https://mysite.itvarsity.org/api/recipe-book/";
                 document.getElementById("getAll").addEventListener('click',getAllPosts);
                 document.getElementById("getPopular").addEventListener('click',getPopularPosts);
                 document.getElementById("getLatest").addEventListener('click',getLatestPosts);
-
+                document.getElementById("lunch").addEventListener('click',getLunch);
+                document.getElementById("breakfast").addEventListener('click',getBreakfast);
+                document.getElementById("meal").addEventListener('click',getMeals);
+                document.getElementById("dessert").addEventListener('click',getDessert);
+                document.getElementById("drink").addEventListener('click',getDrinks);
+                document.getElementById("baker").addEventListener('click',getBaker);
                 getAllPosts();
+            }
+            function getLunch() {
+                category="main";
+                //console.log(category);
+                fetchPosts(category,0);
+                //setActiveLink(category);
+            }
+            function getBaker() {
+                category="main";
+                //console.log(category);
+                fetchPosts(category,0);
+                //setActiveLink(category);
+            }
+            function getBreakfast() {
+                category="main";
+                //console.log(category);
+                fetchPosts(category,0);
+                //setActiveLink(category);
+            }
+            function getDessert() {
+                category="dessert";
+                //console.log(category);
+                fetchPosts(category,0);
+                //setActiveLink(category);
+            }
+            function getDrinks() {
+                category="drink";
+                //console.log(category);
+                fetchPosts(category,0);
+                //setActiveLink(category);
+            }
+            function getMeals() {
+                category="main";
+                //console.log(category);
+                fetchPosts(category,0);
+                setActiveLink(category);
             }
             function getAllPosts() {
                 category="getAll";
+                catcopy=category;
                 //console.log(category);
-                fetchPosts(category);
+                fetchPosts("dessert",0);
+                fetchPosts("main",0);
+                fetchPosts("drink",0);
+
                 setActiveLink(category);
             }
             function getPopularPosts() {
-                category="getPopular";
-                //console.log(category);
-                fetchPosts(category);
+                category="drink";
+                catcopy="getPopular";
+                document.getElementById("tag").innerHTML="<strong><em>your sumeer</em></strong> is incomplete without a pic or two of you sipping<strong><em>your favaurite drink</em></strong>";
+            
+                fetchPosts(category,0);
                 setActiveLink(category);
             }
             function getLatestPosts() {
                 category="getLatest";
+                catcopy=category;
                 //console.log(category);
-                fetchPosts(category);
+                fetchPosts("main",2);
+                fetchPosts("drink",2);
+                fetchPosts("dessert",2);
+                document.getElementById("tag").innerHTML="<strong><em>Out</em></strong> with the <strong><em>Old</em></strong> in with the <strong><em>new</em></strong>";
                 setActiveLink(category);
             }
-            function fetchPosts(category) {
-                fetch(rootPath+'get-posts/?category='+category)
+            function fetchPosts(category,num) {
+                var fullPath=rootPath+"get-recipes/?category="+category;
+                //var catcopy=category;
+                
+                //fetch(rootPath+'get-posts/?category='+category)
+                fetch(fullPath)
                     .then(function(response){return response.json();})
-                    .then(function(data){displayPosts(data);})
+                    .then(function(data){
+                        console.log(data);
+                        
+                        displayPosts(data,num);})
             }
-            function  displayPosts(data) {
+            function  displayPosts(data, num) {
+                console.log(category);
+                if(num==0){
+                    num=data.length;
+                }
                 var output="";
-                for(i=0;i<data.length;i++){
+                for(i=0;i<num;i++){
                     output+=`
                         <div class="card mb-4 box-shadow">
                             <div id="postCard" class="card-header">
-                                <h4 class="my-0 font-weight-normal">${data[i][0]}</h4>
+                                <h4 class="my-0 font-weight-normal">${data[i].title}</h4>
                             </div>
                             <div class="card-body">
-                                <img src="${rootPath}/uploads/${data[i][3]}" class="card-img-top"/>
-                                <p class="card-text">${data[i][1]}</p>
+                                <img src="${rootPath}/uploads/${data[i].image}" class="card-img-top"/>
+                                <p class="card-text">${data[i].description}</p>
                                 <div id="postButtons" class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-lg btn-link"><i class="far fa-heart"></i></button>
@@ -98,7 +182,13 @@
                         </div>
                     `;
                 }
-                document.getElementById("posts").innerHTML=output;
+                if(catcopy!="getAll" || catcopy!="getLatest"){
+                    document.getElementById("posts").innerHTML=output;
+                }
+                else{
+                    document.getElementById("posts").innerHTML+=output;
+                }
+                
             }
             function setActiveLink(id) {
                 document.getElementById("getAll").classList.remove("active");
